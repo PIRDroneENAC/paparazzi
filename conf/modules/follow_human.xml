@@ -1,0 +1,17 @@
+<!DOCTYPE module SYSTEM "module.dtd">
+
+<module name="follow_human" dir="multi">
+  <doc>
+    <description>Allow to follow a human</description>
+    <define name="FOLLOW_HUMAN_ID"               description="the ID which it has to follow (the human)"/>
+  </doc>
+  <header>
+    <file name="follow_human.h"/>
+  </header>
+  <init fun="handle_new_human_pos()"/>
+  <datalink message="HUMAN_GPS" fun="handle_new_human_pos()"/>
+  <makefile>
+    <file name="follow_human.c"/>
+  </makefile>
+</module>
+
