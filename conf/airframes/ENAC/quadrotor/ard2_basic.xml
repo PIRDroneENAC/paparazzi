@@ -33,6 +33,8 @@
     <!--module name="ins" type="float_invariant"/-->
 
     <module name="bat_voltage_ardrone2"/>
+    <module name="follow_human"/>
+    <define name="FOLLOW_HUMAN_ID" value="999"/>
   </firmware>
 
   <modules main_freq="512"/>
