@@ -22,7 +22,9 @@
  * @author Fabien Bonneval
  * Allow to follow a human
  */
-
+ 
+#define NB_HUMAN_POS 10
+#include <stdio.h>
 #include "multi/follow_human.h"
 #include "generated/airframe.h"
 #include "generated/flight_plan.h"
@@ -35,41 +37,36 @@
 #include "firmwares/rotorcraft/navigation.h"
 #include "subsystems/datalink/datalink.h"
 
+struct humanGpsData dataHuman[NB_HUMAN_POS];
+unsigned int data_pointer;
 
 bool_t follow_human_init(void) {
+  data_pointer = 0;
+  int i;
+  for(i=0;i<NB_HUMAN_POS;i++) {
+    //dataHuman[i] = 0;
+  }
   nav_set_heading_deg(75);
   return FALSE;
 }
-#include <stdio.h>
-bool_t handle_new_human_pos() {
 
-printf("bla\n");fflush(stdout);
-/*
- * code de la fonction follow_change_wp du module follow
- */
-  /*unsigned char *buffer = dl_buffer;
-  struct EcefCoor_i new_pos;
-  struct EnuCoor_i enu;
-  new_pos.x = DL_REMOTE_GPS_ecef_x(buffer);
-  new_pos.y = DL_REMOTE_GPS_ecef_y(buffer);
-  new_pos.z = DL_REMOTE_GPS_ecef_z(buffer);
-  
+bool_t handle_new_human_pos() {
+  printf("FOLLOW : new gps data received !\n");fflush(stdout);
+  unsigned char *buffer = dl_buffer;
+  struct humanGpsData pos_human;
+  //pos_human.id = DL_HUMAN_GPS_human_id(buffer);
+  pos_human.lla.lat = DL_HUMAN_GPS_lat(buffer);
+  pos_human.lla.lon = DL_HUMAN_GPS_lon(buffer);
+  pos_human.lla.alt = DL_HUMAN_GPS_alt(buffer);
+  //pos_human.course = DL_HUMAN_GPS_course(buffer);
+  /*  
   // Translate to ENU
   enu_of_ecef_point_i(&enu, &state.ned_origin_i, &new_pos);
   INT32_VECT3_SCALE_2(enu, enu, INT32_POS_OF_CM_NUM, INT32_POS_OF_CM_DEN);
-
-  // TODO: Add the angle to the north
-
-  // Update the offsets
-  enu.x += POS_BFP_OF_REAL(0);
-  enu.y += POS_BFP_OF_REAL(0);
-  enu.z += POS_BFP_OF_REAL(0);
-
-  // TODO: Remove the angle to the north
   */
-  nav_set_heading_deg(135);
+  //nav_set_heading_deg(135);
   // Move the waypoint
-  //waypoint_set_enu_i(99, &enu);
+  waypoint_set_lla (pos_human.id, &(pos_human.lla));
   
   return FALSE;
 }

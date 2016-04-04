@@ -25,13 +25,20 @@
 
 #ifndef FOLLOW_HUMAN_H
 #define FOLLOW_HUMAN_H
+#include "math/pprz_geodetic_int.h"
 #include "std.h"
 #include "subsystems/datalink/datalink.h"
 
 extern bool_t follow_human_init(void);
 extern bool_t handle_new_human_pos(void);
+
+struct humanGpsData {
+  //uint8_t id;
+  struct LlaCoor_i lla;
+  //int32_t course;
+};
 /*
-#define ParseRemoteGps() { \
+#define ParseHumanGps() { \
     if (DL_REMOTE_GPS_ac_id(dl_buffer) == FOLLOW_HUMAN_ID) { \
     } \
   }
