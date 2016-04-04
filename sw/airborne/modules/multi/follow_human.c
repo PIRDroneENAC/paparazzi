@@ -23,7 +23,8 @@
  * Allow to follow a human
  */
  
-#define NB_HUMAN_POS 10
+#define POW_HUMAN_POS 8	// NB of human pos = 2**POW_HUMAN_POS
+#define NB_HUMAN_POS (1<<POW_HUMAN_POS)
 #include <stdio.h>
 #include "multi/follow_human.h"
 #include "generated/airframe.h"
@@ -66,15 +67,16 @@ bool_t handle_new_human_pos() {
 }
 
 int getHumanPos(humanGpsData *data, uint8_t i) {
-  if(i>NB_HUMAN_POS) {
-    return -1;
-  }
-  data = &(dataHuman[(data_pointer + i) % NB_HUMAN_POS]);
+  //if(i>NB_HUMAN_POS) {
+  //  return -1;
+  //}
+  *data = dataHuman[(data_pointer + i) % NB_HUMAN_POS];
   return 0;
 }
 
 int setLastHumanPos(humanGpsData data) {
   dataHuman[data_pointer % NB_HUMAN_POS] = data;
+  data_pointer++;
   return 0;
 }
 
