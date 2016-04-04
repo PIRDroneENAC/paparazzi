@@ -37,37 +37,44 @@
 #include "firmwares/rotorcraft/navigation.h"
 #include "subsystems/datalink/datalink.h"
 
-struct humanGpsData dataHuman[NB_HUMAN_POS];
-unsigned int data_pointer;
+humanGpsData dataHuman[NB_HUMAN_POS];
+uint8_t data_pointer;
 
 bool_t follow_human_init(void) {
   data_pointer = 0;
   int i;
   for(i=0;i<NB_HUMAN_POS;i++) {
-    //dataHuman[i] = 0;
+    dataHuman[i].lla.alt = 0;
+    dataHuman[i].lla.lat = 0;
+    dataHuman[i].lla.lon = 0;
   }
-  nav_set_heading_deg(75);
+  
   return FALSE;
 }
 
 bool_t handle_new_human_pos() {
   printf("FOLLOW : new gps data received !\n");fflush(stdout);
   unsigned char *buffer = dl_buffer;
-  struct humanGpsData pos_human;
-  //pos_human.id = DL_HUMAN_GPS_human_id(buffer);
+  
+  humanGpsData pos_human;
   pos_human.lla.lat = DL_HUMAN_GPS_lat(buffer);
   pos_human.lla.lon = DL_HUMAN_GPS_lon(buffer);
   pos_human.lla.alt = DL_HUMAN_GPS_alt(buffer);
-  //pos_human.course = DL_HUMAN_GPS_course(buffer);
-  /*  
-  // Translate to ENU
-  enu_of_ecef_point_i(&enu, &state.ned_origin_i, &new_pos);
-  INT32_VECT3_SCALE_2(enu, enu, INT32_POS_OF_CM_NUM, INT32_POS_OF_CM_DEN);
-  */
-  //nav_set_heading_deg(135);
-  // Move the waypoint
-  waypoint_set_lla (pos_human.id, &(pos_human.lla));
+  setLastHumanPos(pos_human);
   
   return FALSE;
+}
+
+int getHumanPos(humanGpsData *data, uint8_t i) {
+  if(i>NB_HUMAN_POS) {
+    return -1;
+  }
+  data = &(dataHuman[(data_pointer + i) % NB_HUMAN_POS]);
+  return 0;
+}
+
+int setLastHumanPos(humanGpsData data) {
+  dataHuman[data_pointer % NB_HUMAN_POS] = data;
+  return 0;
 }
 

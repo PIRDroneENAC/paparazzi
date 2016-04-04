@@ -29,14 +29,17 @@
 #include "std.h"
 #include "subsystems/datalink/datalink.h"
 
-extern bool_t follow_human_init(void);
-extern bool_t handle_new_human_pos(void);
-
-struct humanGpsData {
+typedef struct humanGpsData {
   //uint8_t id;
   struct LlaCoor_i lla;
   //int32_t course;
-};
+}humanGpsData;
+
+extern bool_t follow_human_init(void);
+extern bool_t handle_new_human_pos(void);
+int setLastHumanPos(humanGpsData data);
+int getHumanPos(humanGpsData *data, uint8_t i);
+
 /*
 #define ParseHumanGps() { \
     if (DL_REMOTE_GPS_ac_id(dl_buffer) == FOLLOW_HUMAN_ID) { \
