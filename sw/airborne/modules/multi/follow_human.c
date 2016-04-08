@@ -39,6 +39,7 @@
 
 humanGpsData* dataHuman[NB_HUMAN_POS];
 uint8_t data_pointer;
+static int counter=0;
 
 bool_t follow_human_init(void) {
   data_pointer = 0;
@@ -81,20 +82,47 @@ int setLastHumanPos(humanGpsData* data) {
   return 0;
 }
 
+int convertRad(input){
+ return (Math.PI * input)/180;
+}
+
+int relative_position(gps_cible,gps_drone){
+ lat_a_degre, lon_a_degre, lat_b_degre, lon_b_degre=gps_cible.lla.lat,gps_cible.lla.lon,drone.lla.lat,gps_drone.lla.lon
+ R = 6378000; //Rayon de la terre en mètre
+ lat_a = convertRad(lat_a_degre);
+ lon_a = convertRad(lon_a_degre);
+ lat_b = convertRad(lat_b_degre);
+ lon_b = convertRad(lon_b_degre);
+ d = R * (Math.PI/2 - Math.asin( Math.sin(lat_b) * Math.sin(lat_a) + Math.cos(lon_b - lon_a) * Math.cos(lat_b) * Math.cos(lat_a)));
+ return d;
+}
+
+int optimal_pitch(lat_drone,lon_drone,lat_human,lon_human){
+ psi = cotan⁻¹(cos(lat_drone)tan(lat_human)/sin(long_human-long_drone)-sin(lat_human)/tan(long_human-long_drone))
+ h=1,71 -90/100 *d*tan(psi)
+ return psi,h
+}
 
 int mission(){
-  //Initialisation de la position relative du drone avec la cible
-  if (getHumanPos(*data, i))==0){
-   //calcul de la position relative du drone.
-   //modification du cap (pour etre dans le champ visuel) heading_consigne =
-   //placement du drone à distance-consigne 
+ struct LlaCoor_i gps_drone;
+ humanGPSData* gps_human;
+ int distance,distance_target = 7,pitch,altitude;
+  //Initialisation
+  if (counter==0){
+   //ask for the coordinate of drone and human 
+   gps_drone = stateGetPositionLla_i();//coord.lla.lat coord.lon coord.alt
+   getHumanPos(&gps_human,0); 
+   distance = relative_position()//relative position drone-human
+   set_heading_towards(gps_human.lla.lat,gps_human.lla.lon)//new heading_consigne =
+   //placement du drone à distance-consigne
   }
- while(1){
-  //calcul de la distance drone/cible
-  //calcul de psi/h optimal
-  /*if (abs(heading-heading_consigne)< = (environ) l’optimal et h pareil 
-  	alors 
-  si à la bonne distance
+  else{
+   gps_drone = stateGetPositionLla_i();//coord.lla.lat coord.lon coord.alt
+   getHumanPos(&gps_human,0); 
+   distance = relative_position()//relative position drone-human
+   pitch,altitude = optimal_pitch//calcul de pitch/altitude optimal
+   if (abs(heading-heading_consigne)< = 5) {
+    /* TODO si à la bonne distance
   	phi=0
   alors regarder si anticipation possible
   		sinon
@@ -102,9 +130,9 @@ int mission(){
   alors changer angle et altitude pour revenir à la bonne distance en restant dans le meme axe 
   si d-dc > 0,5  
   	alors augmenter angle et altitude pour suivre le drone
-  sinon changer angle et altitude pour redonner le visuel*/
+   }*/
+  // recalculer le heading
+  }
  }
-  
-  
 }
 
