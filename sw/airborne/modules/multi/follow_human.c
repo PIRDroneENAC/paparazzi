@@ -77,6 +77,34 @@ int getHumanPos(humanGpsData *data, uint8_t i) {
 int setLastHumanPos(humanGpsData data) {
   dataHuman[data_pointer % NB_HUMAN_POS] = data;
   data_pointer++;
+  //mission();
   return 0;
+}
+
+
+int mission(){
+  //Initialisation de la position relative du drone avec la cible
+  if (getHumanPos(*data, i))==0){
+   //calcul de la position relative du drone.
+   //modification du cap (pour etre dans le champ visuel) heading_consigne =
+   //placement du drone à distance-consigne 
+  }
+ while(1){
+  //calcul de la distance drone/cible
+  //calcul de psi/h optimal
+  /*if (abs(heading-heading_consigne)< = (environ) l’optimal et h pareil 
+  	alors 
+  si à la bonne distance
+  	phi=0
+  alors regarder si anticipation possible
+  		sinon
+  si (d-dc) < 0,5 
+  alors changer angle et altitude pour revenir à la bonne distance en restant dans le meme axe 
+  si d-dc > 0,5  
+  	alors augmenter angle et altitude pour suivre le drone
+  sinon changer angle et altitude pour redonner le visuel*/
+ }
+  
+  
 }
 
