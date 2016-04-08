@@ -97,10 +97,11 @@ int relative_position(gps_cible,gps_drone){
  return d;
 }
 
-int optimal_pitch(lat_drone,lon_drone,lat_human,lon_human){
- psi = cotan⁻¹(cos(lat_drone)tan(lat_human)/sin(long_human-long_drone)-sin(lat_human)/tan(long_human-long_drone))
- h=1,71 -90/100 *d*tan(psi)
- return psi,h
+int optimal_pitch(gps_cible,gps_drone,d){
+ lat_human, lon_human, lat_drone, lon_drone=gps_cible.lla.lat,gps_cible.lla.lon,drone.lla.lat,gps_drone.lla.lon;
+ psi = cotan⁻¹(cos(lat_drone)tan(lat_human)/sin(long_human-long_drone)-sin(lat_human)/tan(long_human-long_drone));
+ h=1,71 -90/100 *d*tan(psi);
+ return psi,h;
 }
 
 int mission(){
@@ -112,15 +113,15 @@ int mission(){
    //ask for the coordinate of drone and human 
    gps_drone = stateGetPositionLla_i();//coord.lla.lat coord.lon coord.alt
    getHumanPos(&gps_human,0); 
-   distance = relative_position()//relative position drone-human
-   set_heading_towards(gps_human.lla.lat,gps_human.lla.lon)//new heading_consigne =
+   distance = relative_position();//relative position drone-human
+   set_heading_towards(gps_human.lla.lat,gps_human.lla.lon);//new heading_consigne =
    //placement du drone à distance-consigne
   }
   else{
    gps_drone = stateGetPositionLla_i();//coord.lla.lat coord.lon coord.alt
    getHumanPos(&gps_human,0); 
-   distance = relative_position()//relative position drone-human
-   pitch,altitude = optimal_pitch//calcul de pitch/altitude optimal
+   distance = relative_position(gps_human,gps_drone);//relative position drone-human
+   pitch,altitude = optimal_pitch(gps_human,gps_drone,distance);//calcul de pitch/altitude optimal
    if (abs(heading-heading_consigne)< = 5) {
     /* TODO si à la bonne distance
   	phi=0
@@ -134,5 +135,6 @@ int mission(){
   // recalculer le heading
   }
  }
+ counter++;
 }
 
