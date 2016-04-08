@@ -8,8 +8,8 @@
   <header>
     <file name="follow_human.h"/>
   </header>
-  <init fun="handle_new_human_pos()"/>
-  <datalink message="HUMAN_GPS" fun="handle_new_human_pos()"/>
+  <init fun="follow_human_init()"/>
+  <datalink message="HUMAN_GPS" fun="ParseHumanGps()"/>
   <makefile>
     <file name="follow_human.c"/>
   </makefile>

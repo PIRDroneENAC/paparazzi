@@ -23,8 +23,7 @@
  * Allow to follow a human
  */
  
-#define POW_HUMAN_POS 8	// NB of human pos = 2**POW_HUMAN_POS
-#define NB_HUMAN_POS (1<<POW_HUMAN_POS)
+#define NB_HUMAN_POS 10
 #include <stdio.h>
 #include "multi/follow_human.h"
 #include "generated/airframe.h"
@@ -38,43 +37,44 @@
 #include "firmwares/rotorcraft/navigation.h"
 #include "subsystems/datalink/datalink.h"
 
-humanGpsData dataHuman[NB_HUMAN_POS];
+humanGpsData* dataHuman[NB_HUMAN_POS];
 uint8_t data_pointer;
 
 bool_t follow_human_init(void) {
   data_pointer = 0;
   int i;
   for(i=0;i<NB_HUMAN_POS;i++) {
-    dataHuman[i].lla.alt = 0;
-    dataHuman[i].lla.lat = 0;
-    dataHuman[i].lla.lon = 0;
+    dataHuman[i] = 0;
   }
   
   return FALSE;
 }
 
-bool_t handle_new_human_pos() {
+bool_t handle_new_human_pos(unsigned char *buffer) {
   printf("FOLLOW : new gps data received !\n");fflush(stdout);
-  unsigned char *buffer = dl_buffer;
   
-  humanGpsData pos_human;
-  pos_human.lla.lat = DL_HUMAN_GPS_lat(buffer);
-  pos_human.lla.lon = DL_HUMAN_GPS_lon(buffer);
-  pos_human.lla.alt = DL_HUMAN_GPS_alt(buffer);
+  humanGpsData *pos_human = malloc(sizeof(humanGpsData));
+  pos_human->lla.lat = DL_HUMAN_GPS_lat(buffer);
+  pos_human->lla.lon = DL_HUMAN_GPS_lon(buffer);
+  pos_human->lla.alt = DL_HUMAN_GPS_alt(buffer);
   setLastHumanPos(pos_human);
   
   return FALSE;
 }
 
-int getHumanPos(humanGpsData *data, uint8_t i) {
-  //if(i>NB_HUMAN_POS) {
-  //  return -1;
-  //}
+int getHumanPos(humanGpsData **data, uint8_t i) {
+  if(i>NB_HUMAN_POS || dataHuman[(data_pointer + i) % NB_HUMAN_POS] == 0) {
+    return -1;
+  }
+
   *data = dataHuman[(data_pointer + i) % NB_HUMAN_POS];
   return 0;
 }
 
-int setLastHumanPos(humanGpsData data) {
+int setLastHumanPos(humanGpsData* data) {
+  if(dataHuman[data_pointer % NB_HUMAN_POS] != 0) {
+    free(dataHuman[data_pointer % NB_HUMAN_POS]);
+  }
   dataHuman[data_pointer % NB_HUMAN_POS] = data;
   data_pointer++;
   return 0;
