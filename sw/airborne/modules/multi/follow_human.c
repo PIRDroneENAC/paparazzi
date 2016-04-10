@@ -123,10 +123,19 @@ int mission(){
    distance = relative_position(gps_human,gps_drone);//relative position drone-human
    pitch,altitude = optimal_pitch(gps_human,gps_drone,distance);//calcul de pitch/altitude optimal
    if (abs(heading-heading_consigne)< = 5) {
-    /* TODO si à la bonne distance
-  	phi=0
+    if (abs(distance-distance_traget) = 0) {
+      //nav_roll = 0
+    }
+    else {
+     if (abs(distance-distance_traget) < 0.5) {
+     
+     }
+    }
+   }
+  /*TODO si à la bonne distance
+  	 phi=0 (psi?)
   alors regarder si anticipation possible
-  		sinon
+     sinon
   si (d-dc) < 0,5 
   alors changer angle et altitude pour revenir à la bonne distance en restant dans le meme axe 
   si d-dc > 0,5  
