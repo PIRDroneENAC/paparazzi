@@ -37,8 +37,7 @@ typedef struct humanGpsData {
 
 extern bool_t follow_human_init(void);
 extern bool_t handle_new_human_pos(unsigned char *);
-int setLastHumanPos(humanGpsData* data);
-int getHumanPos(humanGpsData **data, uint8_t i);
+int getHumanPos(humanGpsData *data, uint8_t i);
 
 
 #define ParseHumanGps() { \

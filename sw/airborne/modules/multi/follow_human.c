@@ -37,14 +37,16 @@
 #include "firmwares/rotorcraft/navigation.h"
 #include "subsystems/datalink/datalink.h"
 
-humanGpsData* dataHuman[NB_HUMAN_POS];
+humanGpsData dataHuman[NB_HUMAN_POS];
 uint8_t data_pointer;
 
 bool_t follow_human_init(void) {
   data_pointer = 0;
   int i;
   for(i=0;i<NB_HUMAN_POS;i++) {
-    dataHuman[i] = 0;
+    dataHuman[i].lla.alt = 0;
+    dataHuman[i].lla.lat = 0;
+    dataHuman[i].lla.lon = 0;
   }
   
   return FALSE;
@@ -53,17 +55,15 @@ bool_t follow_human_init(void) {
 bool_t handle_new_human_pos(unsigned char *buffer) {
   printf("FOLLOW : new gps data received !\n");fflush(stdout);
   
-  humanGpsData *pos_human = malloc(sizeof(humanGpsData));
-  pos_human->lla.lat = DL_HUMAN_GPS_lat(buffer);
-  pos_human->lla.lon = DL_HUMAN_GPS_lon(buffer);
-  pos_human->lla.alt = DL_HUMAN_GPS_alt(buffer);
-  setLastHumanPos(pos_human);
-  
+  dataHuman[data_pointer % NB_HUMAN_POS].lla.lat = DL_HUMAN_GPS_lat(buffer);
+  dataHuman[data_pointer % NB_HUMAN_POS].lla.lon = DL_HUMAN_GPS_lon(buffer);
+  dataHuman[data_pointer % NB_HUMAN_POS].lla.alt = DL_HUMAN_GPS_alt(buffer);
+  data_pointer++;
   return FALSE;
 }
 
-int getHumanPos(humanGpsData **data, uint8_t i) {
-  if(i>NB_HUMAN_POS || dataHuman[(data_pointer + i) % NB_HUMAN_POS] == 0) {
+int getHumanPos(humanGpsData *data, uint8_t i) {
+  if(i>NB_HUMAN_POS) {
     return -1;
   }
 
@@ -71,25 +71,14 @@ int getHumanPos(humanGpsData **data, uint8_t i) {
   return 0;
 }
 
-int setLastHumanPos(humanGpsData* data) {
-  if(dataHuman[data_pointer % NB_HUMAN_POS] != 0) {
-    free(dataHuman[data_pointer % NB_HUMAN_POS]);
-  }
-  dataHuman[data_pointer % NB_HUMAN_POS] = data;
-  data_pointer++;
-  //mission();
-  return 0;
-}
-
-
 int mission(){
   //Initialisation de la position relative du drone avec la cible
-  if (getHumanPos(*data, i))==0){
+  //if (getHumanPos(*data, i))==0){
    //calcul de la position relative du drone.
    //modification du cap (pour etre dans le champ visuel) heading_consigne =
    //placement du drone à distance-consigne 
-  }
- while(1){
+  //}
+ //while(1){
   //calcul de la distance drone/cible
   //calcul de psi/h optimal
   /*if (abs(heading-heading_consigne)< = (environ) l’optimal et h pareil 
@@ -103,7 +92,7 @@ int mission(){
   si d-dc > 0,5  
   	alors augmenter angle et altitude pour suivre le drone
   sinon changer angle et altitude pour redonner le visuel*/
- }
+ //}
   
   
 }
