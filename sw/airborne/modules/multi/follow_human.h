@@ -32,7 +32,7 @@
 typedef struct humanGpsData {
   //uint8_t id;
   struct LlaCoor_i lla;
-  //int32_t course;
+  uint16_t speed;
 }humanGpsData;
 
 extern bool_t follow_human_init(void);

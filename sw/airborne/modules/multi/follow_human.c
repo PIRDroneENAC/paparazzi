@@ -48,18 +48,20 @@ bool_t follow_human_init(void) {
     dataHuman[i].lla.alt = 0;
     dataHuman[i].lla.lat = 0;
     dataHuman[i].lla.lon = 0;
+    dataHuman[i].speed = 0;
   }
   
   return FALSE;
 }
 
 bool_t handle_new_human_pos(unsigned char *buffer) {
-  printf("FOLLOW : new gps data received !\n");fflush(stdout);
-  
   dataHuman[data_pointer % NB_HUMAN_POS].lla.lat = DL_HUMAN_GPS_lat(buffer);
   dataHuman[data_pointer % NB_HUMAN_POS].lla.lon = DL_HUMAN_GPS_lon(buffer);
   dataHuman[data_pointer % NB_HUMAN_POS].lla.alt = DL_HUMAN_GPS_alt(buffer);
+  dataHuman[data_pointer % NB_HUMAN_POS].speed = DL_HUMAN_GPS_speed(buffer);
   data_pointer++;
+  
+  printf("FOLLOW : new gps data : lat = %d    lon = %d    alt = %d    speed = %d\n", dataHuman[data_pointer % NB_HUMAN_POS].lla.lat,dataHuman[data_pointer % NB_HUMAN_POS].lla.lon,dataHuman[data_pointer % NB_HUMAN_POS].lla.alt,dataHuman[data_pointer % NB_HUMAN_POS].speed);fflush(stdout);
   return FALSE;
 }
 
@@ -71,7 +73,7 @@ int getHumanPos(humanGpsData *data, uint8_t i) {
   *data = dataHuman[(data_pointer + i) % NB_HUMAN_POS];
   return 0;
 }
-
+/*
 int convertRad(input){
  return (Math.PI * input)/180;
 }
@@ -121,7 +123,8 @@ int mission(){
      
      }
     }
-   }
+   }*/
+   
   /*TODO si à la bonne distance
   	 phi=0 (psi?)
   alors regarder si anticipation possible
@@ -132,8 +135,8 @@ int mission(){
   	alors augmenter angle et altitude pour suivre le drone
    }*/
   // recalculer le heading
-  }
+/*  }
  }
  counter++;
-}
+}*/
 
