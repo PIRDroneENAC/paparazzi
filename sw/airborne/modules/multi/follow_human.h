@@ -25,19 +25,26 @@
 
 #ifndef FOLLOW_HUMAN_H
 #define FOLLOW_HUMAN_H
-#include "math/pprz_geodetic_int.h"
+#include "math/pprz_geodetic_float.h"
 #include "std.h"
 #include "subsystems/datalink/datalink.h"
 
+#ifndef CLAMP
+#define CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
+#endif
+
 typedef struct humanGpsData {
   //uint8_t id;
-  struct LlaCoor_i lla;
-  uint16_t speed;
+  struct EnuCoor_f enu;
+  float speed;
 }humanGpsData;
 
 extern bool_t follow_human_init(void);
 extern bool_t handle_new_human_pos(unsigned char *);
 int getHumanPos(humanGpsData *data, uint8_t i);
+float convertRadLlacoord(float input);
+extern bool_t follow_human_periodic(void);
+
 
 
 #define ParseHumanGps() { \

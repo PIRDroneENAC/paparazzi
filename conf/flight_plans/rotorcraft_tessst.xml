@@ -1,6 +1,6 @@
 <!DOCTYPE flight_plan SYSTEM "flight_plan.dtd">
 
-<flight_plan alt="152" ground_alt="147" lat0="43 33 50.83" lon0="1 28 52.61" max_dist_from_home="150" name="Rotorcraft Basic (Enac)" security_height="2">
+<flight_plan alt="152" ground_alt="147" lat0="43 33 50.83" lon0="1 28 52.61" max_dist_from_home="400" name="Rotorcraft Basic (Enac)" security_height="2">
   <header>
 #include "autopilot.h"
 </header>
@@ -14,6 +14,8 @@
     <waypoint name="p4" x="13.7" y="-40.7"/>
     <waypoint height="2." name="CAM" x="-20" y="-50"/>
     <waypoint name="TD" x="5.6" y="-10.9"/>
+    <waypoint name="HUMAN" x="-19.7" y="-5.4"/>
+    <waypoint name="HUMAN_ESTIMATED" x="-19.8" y="-7.1"/>
   </waypoints>
   <blocks>
     <block name="Wait GPS">
@@ -44,7 +46,7 @@
       <stay wp="p1"/>
     </block>
     <block name="follow">
-      <call fun="follow_human_init()"/>
+      <call fun="follow_human_periodic()"/>
       <deroute block="Standby"/>
     </block>
     <block name="go_p2">
