@@ -14,8 +14,8 @@ import gpxpy
 import gpxpy.gpx
 import random
 
-DATA_PATH = 'data'
-DEFAULTDATA = os.path.join(DATA_PATH, '15_10_22__10_12_32.data')
+DATA_PATH = './'
+DEFAULTDATA = os.path.join(DATA_PATH, 'human_positions.gpx')
 REGEX = "^([0-9.]+) (.*)"
 # DEFAULTBUS = "224.5.6.7:8910" # on MacOSX
 DEFAULTBUS = "127.255.255.255:2010"  # on Linux
